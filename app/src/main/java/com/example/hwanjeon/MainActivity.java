@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     static RequestQueue requestQueue;
     Button country1, country2,swap;
-    TextView textView,change;
+    TextView textView,change, USD1,USD2;
     EditText editText;
     Money money;
     int i = 0;
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textView);
         change = (TextView) findViewById(R.id.change);
         editText = (EditText) findViewById(R.id.editTextNumber);
-
+        USD1 = (TextView) findViewById(R.id.USD1);
+        USD2 = (TextView) findViewById(R.id.USD2);
 
         sendRequest();
         country1.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +78,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 buttondialog2();
+            }
+        });
+
+        swap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String temp = selectedCountry2;
+                selectedCountry2 = selectedCountry;
+                selectedCountry = temp;
+                println_con1(selectedCountry);
+                println_con2(selectedCountry2);
+                String temp1 = editText.getText().toString();
+                String temp2 = change.getText().toString();
+                int wow = (int)Math.round(Double.parseDouble(temp2));
+                println_change(temp1);
+                println_edit(String.valueOf(wow));
             }
         });
 
@@ -94,7 +112,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
-                    println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                    String edits = editText.getText().toString();
+                    if (edits.isEmpty()) {
+                        edits = "0";
+                    }
+                    println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(edits))));
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     println_change("에러 (입력 값 변경)");
@@ -114,7 +136,13 @@ public class MainActivity extends AppCompatActivity {
                         selectedCountry = countries[which];
                         println_con1(selectedCountry);
                         try {
-                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                            String edits = editText.getText().toString();
+                            if (edits.isEmpty()) {
+                                edits = "0";
+                            }
+                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(edits))));
+                            println_USD1("USD $1 환율 : " + String.valueOf(exchangeRates.get(selectedCountry)));
+                            println_USD2("USD $1 환율 : " + String.valueOf(exchangeRates.get(selectedCountry2)));
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                             println_change("에러 (입력 값 변경)");
@@ -137,7 +165,13 @@ public class MainActivity extends AppCompatActivity {
                         selectedCountry2 = countries[which];
                         println_con2(selectedCountry2);
                         try {
-                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                            String edits = editText.getText().toString();
+                            if (edits.isEmpty()) {
+                                edits = "0";
+                            }
+                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(edits))));
+                            println_USD1("USD $1 환율 : " + String.valueOf(exchangeRates.get(selectedCountry)));
+                            println_USD2("USD $1 환율 : " + String.valueOf(exchangeRates.get(selectedCountry2)));
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                             println_change("에러 (입력 값 변경)");
@@ -160,8 +194,15 @@ public class MainActivity extends AppCompatActivity {
                         String country = parseResponse(response);
                         exchangeRates = parseJson(country);
                         countries = exchangeRates.keySet().toArray(new String[0]);
+                        Arrays.sort(countries);
                         try {
-                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                            String edits = editText.getText().toString();
+                            if (edits.isEmpty()) {
+                                edits = "0";
+                            }
+                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(edits))));
+                            println_USD1("USD $1 환율 : " + String.valueOf(exchangeRates.get(selectedCountry)));
+                            println_USD2("USD $1 환율 : " + String.valueOf(exchangeRates.get(selectedCountry2)));
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                             println_change("에러 (입력 값 변경)");
@@ -235,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(data +"\n");
     }
     public void println_change(String data) {
-        change.setText(data +"\n");
+        change.setText(data);
     }
 
     public void println_con1(String data) {
@@ -243,5 +284,14 @@ public class MainActivity extends AppCompatActivity {
     }
     public void println_con2(String data) {
         country2.setText(data);
+    }
+    public void println_edit(String data){
+        editText.setText(data);
+    }
+    public void println_USD1(String data){
+        USD1.setText(data);
+    }
+    public void println_USD2(String data){
+        USD2.setText(data);
     }
 }

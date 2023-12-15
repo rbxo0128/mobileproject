@@ -9,6 +9,8 @@ Api : https://app.exchangerate-api.com/
 
 Reference
 
+7장 Network 과제
+
 Code : Chatgpt
 
 Button Click : https://codinghero.tistory.com/105

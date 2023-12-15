@@ -8,16 +8,24 @@
     android:background="#FFFFFF"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="129dp"
+            android:gravity="center"
+            android:textSize="40dp"
+            android:text="환전소"
+            android:textColor="#000000" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,14 +33,17 @@
 
         <EditText
             android:id="@+id/editTextNumber"
+            android:layout_marginTop="20dp"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:textColor="#000000"
+            android:textSize="20dp"
             android:text="1000" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/country1"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/editTextNumber"
@@ -40,29 +51,42 @@
             android:background="@drawable/round"
             android:textColor="#000000"
             android:textStyle="bold"
-            android:text="Button" />
+            android:text="KRW" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/swap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/editTextNumber"
-            android:text="Button" />
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/round"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:layout_marginTop="40dp"
+            android:text="Swap" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:layout_below="@id/button4"/>
+            android:id="@+id/change"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:gravity="center|left"
+            android:layout_below="@id/swap"
+            android:text="0"
+            android:textColor="#000000"
+            android:layout_marginTop="40dp"
+            android:textSize="20dp" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/country2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/button4"
-            android:layout_toRightOf="@id/textView2"
-            android:text="Button" />
+            android:layout_below="@id/swap"
+            android:background="@drawable/round"
+            android:layout_toRightOf="@id/change"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:layout_marginTop="40dp"
+            android:text="USD" />
 
     </RelativeLayout>
 

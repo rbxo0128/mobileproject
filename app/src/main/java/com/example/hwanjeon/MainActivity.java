@@ -17,9 +17,12 @@ import com.google.gson.Gson;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -29,15 +32,17 @@ import java.util.*;
 public class MainActivity extends AppCompatActivity {
 
     static RequestQueue requestQueue;
-    Button button;
-    TextView textView;
+    Button country1, country2,swap;
+    TextView textView,change;
+    EditText editText;
     Money money;
     int i = 0;
     ObjectMapper objectMapper = new ObjectMapper();
 
     Map<String, Double> exchangeRates;
 
-    String selectedCountry = "USD";
+    String selectedCountry = "KRW";
+    String selectedCountry2 = "USD";
 
     String[] countries;
 
@@ -51,15 +56,49 @@ public class MainActivity extends AppCompatActivity {
             requestQueue = Volley.newRequestQueue(getApplicationContext());
         }
 
-        button = (Button) findViewById(R.id.button);
+        country1 = (Button) findViewById(R.id.country1);
+        country2 = (Button) findViewById(R.id.country2);
+        swap = (Button) findViewById(R.id.swap);
         textView = (TextView) findViewById(R.id.textView);
+        change = (TextView) findViewById(R.id.change);
+        editText = (EditText) findViewById(R.id.editTextNumber);
 
 
         sendRequest();
-        button.setOnClickListener(new View.OnClickListener() {
+        country1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 buttondialog();
+            }
+        });
+
+        country2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttondialog2();
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                // 텍스트 변경 전에 수행할 작업
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // 텍스트가 변경될 때마다 수행할 작업
+                //updateTextView(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                try {
+                    println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    println_change("에러 (입력 값 변경)");
+                }
             }
         });
 
@@ -73,8 +112,36 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         selectedCountry = countries[which];
-                        println_b(selectedCountry);
-                        println(exchangeRates.get(selectedCountry).toString());
+                        println_con1(selectedCountry);
+                        try {
+                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            println_change("에러 (입력 값 변경)");
+                        }
+
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void buttondialog2() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("오늘의 환전")
+                .setItems(countries, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectedCountry2 = countries[which];
+                        println_con2(selectedCountry2);
+                        try {
+                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            println_change("에러 (입력 값 변경)");
+                        }
                     }
                 });
 
@@ -93,13 +160,18 @@ public class MainActivity extends AppCompatActivity {
                         String country = parseResponse(response);
                         exchangeRates = parseJson(country);
                         countries = exchangeRates.keySet().toArray(new String[0]);
-                        println("확인");
+                        try {
+                            println_change(String.valueOf(String.format("%.3f", exchangeRates.get(selectedCountry2) / exchangeRates.get(selectedCountry) * Integer.parseInt(editText.getText().toString()))));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            println_change("에러 (입력 값 변경)");
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        println("에러 -> " + error.getMessage());
+
                     }
                 }
         ) {
@@ -159,11 +231,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void println(String data) {
+    public void println_text(String data) {
         textView.setText(data +"\n");
     }
+    public void println_change(String data) {
+        change.setText(data +"\n");
+    }
 
-    public void println_b(String data) {
-        button.setText(data +"\n");
+    public void println_con1(String data) {
+        country1.setText(data);
+    }
+    public void println_con2(String data) {
+        country2.setText(data);
     }
 }
